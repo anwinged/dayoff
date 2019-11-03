@@ -1,9 +1,8 @@
 require "./spec_helper"
 
 describe Dayoff do
-  # TODO: Write tests
-
-  it "works" do
-    false.should eq(true)
+  it "can calc work hours" do
+    app = Dayoff::App.new("./spec/data/work-dates.json")
+    app.get_work_hours.should eq 20
   end
 end
