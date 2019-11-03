@@ -3,7 +3,7 @@ require "json"
 module Dayoff
   VERSION = "0.1.0"
 
-  class WorkDate
+  class PlannedDate
     JSON.mapping(
       date: String,
       hours: Int32,
@@ -11,16 +11,16 @@ module Dayoff
   end
 
   class App
-    def initialize(wh_path)
-      content = File.open(wh_path) do |file|
+    def initialize(pddates_path)
+      content = File.open(pddates_path) do |file|
         file.gets_to_end
       end
-      @wdates = Array(WorkDate).from_json(content)
+      @pdates = Array(PlannedDate).from_json(content)
     end
 
     def get_work_hours
       sum = 0
-      @wdates.each do |wd|
+      @pdates.each do |wd|
         sum += wd.hours
       end
       sum
