@@ -17,14 +17,17 @@ module Dayoff
     )
   end
 
-  class App
-    def initialize(pdates_path, wdates_path)
-      content = File.open(pdates_path) do |file|
+  class Profile
+    PLANNED_DATES = "planned-dates.json"
+    WORK_RECORDS  = "work-records.json"
+
+    def initialize(@path : String)
+      content = File.open(File.join(@path, PLANNED_DATES)) do |file|
         file.gets_to_end
       end
       @pdates = Array(PlannedDate).from_json(content)
 
-      content = File.open(wdates_path) do |file|
+      content = File.open(File.join(@path, WORK_RECORDS)) do |file|
         file.gets_to_end
       end
       @wrecords = Array(WorkRecord).from_json(content)
@@ -47,7 +50,13 @@ module Dayoff
         diff = f - s
         sum += diff.total_hours.to_i32
       end
-      return sum
+      sum
+    end
+  end
+
+  class App
+    def profile(path)
+      Profile.new(path)
     end
   end
 end
