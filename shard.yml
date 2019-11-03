@@ -1,0 +1,13 @@
+name: dayoff
+version: 0.1.0
+
+authors:
+  - Anton Vakhrushev <anton@vakhrushev.me>
+
+targets:
+  dayoff:
+    main: src/dayoff.cr
+
+crystal: 0.31.1
+
+license: MIT

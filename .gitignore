@@ -1,0 +1,11 @@
+/.crystal/
+/.shards/
+/bin/
+/build/
+/coverage/
+/docs/
+/lib/
+/tmp/
+*.dwarf
+*.sublime*
+spec_cov_*
