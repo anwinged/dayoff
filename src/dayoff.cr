@@ -17,20 +17,35 @@ module Dayoff
     )
   end
 
+  class Collection(T)
+    def initialize(@path : String)
+    end
+
+    def get_all : Array(T)
+      if File.file? @path
+        content = File.read @path
+        Array(T).from_json(content)
+      else
+        [] of T
+      end
+    end
+
+    def write(items : Array(T))
+      content = items.to_json
+      File.write @path, content
+    end
+  end
+
   class Profile
     PLANNED_DATES = "planned-dates.json"
     WORK_RECORDS  = "work-records.json"
 
-    def initialize(@path : String)
-      content = File.open(File.join(@path, PLANNED_DATES)) do |file|
-        file.gets_to_end
-      end
-      @pdates = Array(PlannedDate).from_json(content)
+    @pdates = [] of PlannedDate
+    @wrecords = [] of WorkRecord
 
-      content = File.open(File.join(@path, WORK_RECORDS)) do |file|
-        file.gets_to_end
-      end
-      @wrecords = Array(WorkRecord).from_json(content)
+    def initialize(@path : String)
+      @pdates = Collection(PlannedDate).new(File.join(@path, PLANNED_DATES)).get_all
+      @wrecords = Collection(WorkRecord).new(File.join(@path, WORK_RECORDS)).get_all
     end
 
     def get_planned_hours
