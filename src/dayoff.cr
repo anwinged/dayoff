@@ -1,3 +1,5 @@
+require "./dayoff/**"
+
 module Dayoff
   VERSION = "0.1.0"
 

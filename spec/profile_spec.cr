@@ -61,28 +61,28 @@ module Dayoff::Test
       prof.finish finish_time
       records = storage.get_work_records
       records.size.should eq 2
-      records.last.finish_time.should eq finish_time
+      records.last.finish.should eq finish_time
     end
 
     it "can calc planned hours" do
       prof = create_profile
-      s = prof.get_planned_hours t(3, 12)
+      span = prof.get_planned_hours t(3, 12)
       expected = 8 * 3
-      expected.should eq s.total_hours
+      expected.should eq span.total_hours
     end
 
     it "can calc work hours" do
       prof = create_profile
-      s = prof.get_work_hours t(3, 12)
+      span = prof.get_work_hours t(3, 12)
       expected = 10 * 2
-      expected.should eq s.total_hours
+      expected.should eq span.total_hours
     end
 
     it "can calc remaining time" do
       prof = create_profile
-      s = prof.remaining_time t(3, 12)
+      span = prof.remaining_time t(3, 12)
       expected = 8 * 3 - 10 * 2
-      expected.should eq s.total_hours
+      expected.should eq span.total_hours
     end
   end
 end

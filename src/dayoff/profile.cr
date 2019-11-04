@@ -22,7 +22,7 @@ module Dayoff
     def get_planned_hours(on_time : Time) : Time::Span
       check_date = on_time.at_beginning_of_day
       @pdates.reduce(Time::Span.zero) do |acc, wd|
-        if wd.date_time <= check_date
+        if wd.date <= check_date
           acc + wd.time_span
         else
           acc
@@ -38,7 +38,7 @@ module Dayoff
 
     def start(time : Time) : Nil
       @wrecords.each do |wr|
-        if time <= wr.start_time || time <= wr.finish_time
+        if time <= wr.start || time <= wr.finish!
           raise CrossedTimeSpan.new
         end
       end
@@ -52,7 +52,7 @@ module Dayoff
       if started.nil?
         raise StartedRecordNotFound.new
       end
-      started.finish_time = time
+      started.finish = time
       @storage.set_work_records @wrecords
     end
 
