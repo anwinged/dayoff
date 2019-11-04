@@ -3,16 +3,6 @@ require "./spec_helper"
 module Dayoff::Test
   extend self
 
-  def d(day)
-    location = Time::Location.load("Europe/Moscow")
-    Time.local(2019, 1, day, location: location)
-  end
-
-  def t(day, hour, min = 0)
-    location = Time::Location.load("Europe/Moscow")
-    Time.local(2019, 1, day, hour, min, location: location)
-  end
-
   def create_profile
     storage = MemoryStorage.new
     storage.set_planned_dates [
