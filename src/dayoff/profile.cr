@@ -19,22 +19,24 @@ module Dayoff
       @wrecords = @storage.get_work_records
     end
 
-    def get_planned_hours
-      sum = 0
-      @pdates.each do |wd|
-        sum += wd.hours
-      end
-      sum
-    end
-
-    def get_work_hours
-      @wrecords.reduce 0 do |acc, wr|
-        diff = wr.finish_time - wr.start_time
-        acc + diff.total_hours.to_i32
+    def get_planned_hours(on_time : Time) : Time::Span
+      check_date = on_time.at_beginning_of_day
+      @pdates.reduce(Time::Span.zero) do |acc, wd|
+        if wd.date_time <= check_date
+          acc + wd.time_span
+        else
+          acc
+        end
       end
     end
 
-    def start(time : Time)
+    def get_work_hours(on_time : Time) : Time::Span
+      @wrecords.reduce(Time::Span.zero) do |acc, wr|
+        acc + wr.calc_span on_time
+      end
+    end
+
+    def start(time : Time) : Nil
       @wrecords.each do |wr|
         if time <= wr.start_time || time <= wr.finish_time
           raise CrossedTimeSpan.new
@@ -45,13 +47,19 @@ module Dayoff
       @storage.set_work_records @wrecords
     end
 
-    def finish(time : Time)
+    def finish(time : Time) : Nil
       started = @wrecords.find { |x| x.started? }
       if started.nil?
         raise StartedRecordNotFound.new
       end
       started.finish_time = time
       @storage.set_work_records @wrecords
+    end
+
+    def remaining_time(on_time : Time) : Time::Span
+      planned = get_planned_hours on_time
+      worked = get_work_hours on_time
+      planned - worked
     end
   end
 end
