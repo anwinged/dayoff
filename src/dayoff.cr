@@ -130,13 +130,10 @@ module Dayoff
     end
 
     def get_work_hours
-      sum = 0
-      location = Time::Location.load("Europe/Moscow")
-      @wrecords.each do |wr|
+      @wrecords.reduce 0 do |acc, wr|
         diff = wr.finish_time - wr.start_time
-        sum += diff.total_hours.to_i32
+        acc + diff.total_hours.to_i32
       end
-      sum
     end
 
     def start(time : Time)
