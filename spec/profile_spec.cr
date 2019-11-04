@@ -8,7 +8,7 @@ module Dayoff::Test
     Time.local(2019, 1, day, hour, min, location: location)
   end
 
-  describe Dayoff do
+  describe Profile do
     it "can calc work hours" do
       storage = MemoryStorage.new
       storage.set_work_records [
