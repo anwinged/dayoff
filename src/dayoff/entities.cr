@@ -1,6 +1,14 @@
 require "json"
 
 module Dayoff
+  # Fix for timezone
+  struct Time::Format
+    def from_json(pull : JSON::PullParser)
+      string = pull.read_string
+      parse(string)
+    end
+  end
+
   class PlannedDate
     FORMAT = "%Y-%m-%d"
 

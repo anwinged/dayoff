@@ -9,6 +9,7 @@ if [ -t 1 ] ; then
 fi
 
 docker run -i $TTY \
+	--init \
 	-u "$(id -u):$(id -g)" \
 	-v "$PWD:/app" \
 	-p "3000:3000" \

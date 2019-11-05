@@ -3,8 +3,6 @@ module Dayoff
     def initialize(@id : String)
     end
 
-    getter id
-
     def to_s : String
       @id
     end
