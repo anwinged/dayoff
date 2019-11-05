@@ -1,10 +1,12 @@
-FROM alpine:edge as builder
+FROM alpine:3.10.3 as builder
 
 # Install crystal and dev libs
 RUN apk add -u \
+	make  \
 	crystal \
 	shards \
-	make  \
 	tzdata \
 	libc-dev \
+	zlib-dev \
+	libressl-dev \
 	yaml-dev

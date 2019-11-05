@@ -23,6 +23,10 @@ format:
 run: format
 	crystal run $(ENTRY_POINT)
 
+.PHONY: run-server
+run-server: format
+	server run $(ENTRY_POINT)
+
 .PHONY: spec
 spec: format
 	crystal spec --warnings all --error-on-warnings --error-trace

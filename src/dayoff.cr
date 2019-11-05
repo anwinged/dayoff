@@ -1,3 +1,4 @@
+require "kemal"
 require "./dayoff/**"
 
 module Dayoff
@@ -9,3 +10,9 @@ module Dayoff
     end
   end
 end
+
+get "/" do
+  "Hello World!"
+end
+
+Kemal.run

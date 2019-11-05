@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -eu
+
+TTY=
+
+if [ -t 1 ] ; then
+	TTY=-t
+fi
+
+docker run -i $TTY \
+	-u "$(id -u):$(id -g)" \
+	-v "$PWD:/app" \
+	-p "3000:3000" \
+	-w "/app" \
+	dayoff-crystal crystal "$@"
