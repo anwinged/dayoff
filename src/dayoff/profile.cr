@@ -35,6 +35,9 @@ module Dayoff
     end
 
     def start(time : Time) : Nil
+      if started_point
+        raise AlreadyStarted.new
+      end
       @wrecords.each do |wr|
         if time <= wr.start || time <= wr.finish!
           raise CrossedTimeSpan.new
@@ -46,7 +49,7 @@ module Dayoff
     end
 
     def finish(time : Time) : Nil
-      started = @wrecords.find { |x| x.started? }
+      started = started_point
       if started.nil?
         raise StartedRecordNotFound.new
       end
@@ -58,6 +61,10 @@ module Dayoff
       planned = get_planned_hours on_time
       worked = get_work_hours on_time
       planned - worked
+    end
+
+    private def started_point
+      @wrecords.find { |x| x.started? }
     end
   end
 end

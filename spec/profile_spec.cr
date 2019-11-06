@@ -74,5 +74,25 @@ module Dayoff::Test
       expected = 8 * 3 - 10 * 2
       expected.should eq span.total_hours
     end
+
+    it "not start twice" do
+      prof = create_profile
+      start_time = t(3, 10, 0)
+      prof.start start_time
+      expect_raises(AlreadyStarted) do
+        prof.start start_time
+      end
+    end
+
+    it "not finish twice" do
+      prof = create_profile
+      start_time = t(3, 10, 0)
+      finish_time = t(3, 20, 0)
+      prof.start start_time
+      prof.finish finish_time
+      expect_raises(StartedRecordNotFound) do
+        prof.finish finish_time
+      end
+    end
   end
 end

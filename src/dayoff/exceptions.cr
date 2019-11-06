@@ -4,4 +4,7 @@ module Dayoff
 
   class StartedRecordNotFound < Exception
   end
+
+  class AlreadyStarted < Exception
+  end
 end
