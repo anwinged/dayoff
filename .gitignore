@@ -6,6 +6,7 @@
 /docs/
 /lib/
 /node_modules/
+/public/assets/
 /var/
 /tmp/
 *.dwarf
