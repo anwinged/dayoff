@@ -1,0 +1,17 @@
+#!/bin/bash
+
+mkdir -p var/docker-cache/.npm
+
+docker run \
+    --rm \
+    --interactive \
+    --tty \
+    --user "$UID:$(id -g)" \
+    --volume /etc/passwd:/etc/passwd:ro \
+    --volume /etc/group:/etc/group:ro \
+    --volume "$PWD:/app" \
+    --volume "$PWD/var/docker-cache/.npm:/tmp/.npm" \
+    --env npm_config_cache=/tmp/.npm \
+    --workdir /app \
+    node:12.13-alpine \
+    "$@"

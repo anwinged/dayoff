@@ -5,6 +5,8 @@
 /coverage/
 /docs/
 /lib/
+/node_modules/
+/var/
 /tmp/
 *.dwarf
 *.sublime*
