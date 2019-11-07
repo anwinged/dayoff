@@ -24,15 +24,20 @@ post "/api/finish" do |env|
   env.response.status_code = 204
 end
 
-get "/api/remaining-time" do |env|
+get "/api/status" do |env|
   profile = app.profile Dayoff::ProfileId.new(env.get("profile_id").to_s)
   rem_span = profile.remaining_time now
   data = {
+    started: profile.started?,
     hours:   rem_span.total_hours.to_i32,
     minutes: rem_span.minutes.to_i32,
   }
   env.response.content_type = "application/json"
   data.to_json
+end
+
+get "/" do
+  render "public/index.ecr"
 end
 
 Kemal.run

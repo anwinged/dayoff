@@ -34,8 +34,12 @@ module Dayoff
       end
     end
 
+    def started? : Bool
+      !started_point.nil?
+    end
+
     def start(time : Time) : Nil
-      if started_point
+      if started?
         raise AlreadyStarted.new
       end
       @wrecords.each do |wr|
