@@ -7,8 +7,11 @@ build-docker:
 	docker pull alpine:edge
 	docker build -t $(APP_NAME)-crystal .
 
+install-shards:
+	shards install
+
 .PHONY: install
-install: build-docker
+install: build-docker install-shards
 
 .PHONY: build
 build:

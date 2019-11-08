@@ -1,0 +1,13 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: docker:19.03.4
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run: apk add -u make zip git curl
+      - run: pwd; ls -la; make install
+      - run: pwd; ls -la; tools/shards install
+      - run: pwd; ls -la; make spec
+      - run: pwd; ls -la; make build
