@@ -1,13 +1,55 @@
 version: 2.1
+
 jobs:
-  build:
+  build_server:
     docker:
-      - image: docker:19.03.4
+      - image: alpine:3.10.3
     steps:
-      - setup_remote_docker
       - checkout
-      - run: apk add -u make zip git curl
-      - run: pwd; ls -la; make install
-      - run: pwd; ls -la; tools/shards install
-      - run: pwd; ls -la; make spec
-      - run: pwd; ls -la; make build
+      - run: ./docker/provide-crystal-alpine
+      - run: shards install
+      - run: make spec STAGE=prod
+      - run: make build STAGE=prod
+      - persist_to_workspace:
+          root: build
+          paths: ['*']
+
+  build_assets:
+    docker:
+      - image: circleci/node:12.13
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npm run-script build-prod
+      - run: ls -la ./public/assets
+      - persist_to_workspace:
+          root: public/assets
+          paths: ['*']
+
+  build_docker_image:
+    docker:
+      - image: docker:19.03
+    steps:
+      - attach_workspace:
+          at: /tmp/data
+      - run: ls -la /tmp/data
+      - checkout
+      - run: mkdir -p ./build/
+      - run: cp /tmp/data/dayoff ./build/dayoff
+      - run: mkdir -p ./public/assets/
+      - run: cp /tmp/data/main.css /tmp/data/main.js ./public/assets/
+      - setup_remote_docker
+      - run: docker build --file ./docker/Dockerfile.prod --tag anwinged/dayoff .
+      - run: docker login --username "$DOCKER_REG_USERNAME" --password "$DOCKER_REG_PASSWORD"
+      - run: docker push anwinged/dayoff
+
+workflows:
+  version: 2
+  test_and_build:
+    jobs:
+      - build_server
+      - build_assets
+      - build_docker_image:
+          requires:
+            - build_server
+            - build_assets

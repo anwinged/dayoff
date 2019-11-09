@@ -1,7 +1,7 @@
-FROM alpine:3.10.3 as builder
+#!/usr/bin/env sh
 
 # Install crystal and dev libs
-RUN apk add -u \
+apk add -u \
 	make  \
 	crystal \
 	shards \

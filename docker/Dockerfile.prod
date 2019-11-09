@@ -1,0 +1,14 @@
+FROM alpine:3.10.3
+
+ENV BASE_PATH /opt/dayoff
+
+RUN apk add -u tzdata
+
+COPY ./build/dayoff /app/
+COPY ./public /app/public/
+
+WORKDIR /app
+
+EXPOSE 3000
+
+CMD ["/app/dayoff"]

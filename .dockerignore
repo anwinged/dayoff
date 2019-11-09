@@ -1,3 +1,5 @@
 /.crystal/
 /.shards/
 /coverage/
+/node_modules/
+/var/

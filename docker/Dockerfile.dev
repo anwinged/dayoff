@@ -1,0 +1,6 @@
+FROM alpine:3.10.3 as builder
+
+COPY ./docker/provide-crystal-alpine /opt/provision/provide-crystal-alpine
+
+# Install crystal and dev libs
+RUN /opt/provision/provide-crystal-alpine

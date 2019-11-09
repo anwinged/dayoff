@@ -1,11 +1,13 @@
-PATH := tools:$(PATH)
+ifneq ($(STAGE), prod)
+	PATH := tools:$(PATH)
+endif
+
 APP_NAME := dayoff
 ENTRY_POINT = ./src/$(APP_NAME).cr
 
 .PHONY: build-docker
 build-docker:
-	docker pull alpine:edge
-	docker build -t $(APP_NAME)-crystal .
+	docker build --file docker/Dockerfile.dev --tag $(APP_NAME)-crystal --tag anwinged/$(APP_NAME)-crystal .
 
 install-shards:
 	shards install
