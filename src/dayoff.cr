@@ -27,11 +27,7 @@ end
 get "/api/status" do |env|
   profile = app.profile Dayoff::ProfileId.new(env.get("profile_id").to_s)
   rem_span = profile.remaining_time now
-  data = {
-    started: profile.started?,
-    hours:   rem_span.total_hours.to_i32,
-    minutes: rem_span.minutes.to_i32,
-  }
+  data = Dayoff::StatusResponse.new(profile.started?, rem_span)
   env.response.content_type = "application/json"
   data.to_json
 end

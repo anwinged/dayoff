@@ -1,42 +1,56 @@
 <template>
   <div id="app">
-    <a v-if="started" v-on:click.prevent="finish" href="#">Закончить</a>
-    <a v-else v-on:click.prevent="start" href="#">Начать</a>
+    <section class="timer" v-bind:class="{ overtime: isOvertime }">
+      {{ time }}
+    </section>
+    <section class="actions">
+      <a v-if="started" v-on:click.prevent="finish" href="#">Закончить</a>
+      <a v-else v-on:click.prevent="start" href="#">Начать</a>
+    </section>
+    <p class="profile-info">Профиль: {{ profileId }}</p>
   </div>
 </template>
 
 <script>
-import qs from 'qs';
+import h from './helpers';
 export default {
   data() {
     return {
+      profileId: null,
       started: false,
+      status: '',
+      hours: 0,
+      minutes: 0,
     };
   },
   created() {
-    const haystack = window.location.search || window.location.hash;
-    const q = haystack.substring(haystack.indexOf('?') + 1, haystack.length);
-    const query = qs.parse(q);
-    const profile = query['profile'] || '';
-    console.log('PROFILE', query, profile);
-    const p = fetch('/api/status?profile_id=' + profile, {
-      method: 'GET',
-    });
-    p.then(response => {
-      return response.json();
-    }).then(data => {
-      this.started = data.started;
-      console.log('DATA', data);
-    });
+    this.profileId = h.extract_profile_id();
+    this.get_status();
+    setInterval(() => this.get_status(), 30 * 1000);
+  },
+  computed: {
+    time() {
+      const sign = this.isOvertime ? '+' : '';
+      return sign + this.hours + ':' + String(this.minutes).padStart(2, '0');
+    },
+    isOvertime() {
+      return this.status === 'overtime';
+    },
   },
   methods: {
+    get_status() {
+      h.get_status(this.profileId).then(data => {
+        this.started = data.started;
+        this.status = data.status;
+        this.hours = data.hours;
+        this.minutes = data.minutes;
+      });
+    },
     start() {
-      console.log('START');
-      this.started = true;
+      h.start(this.profileId).then(() => this.get_status());
     },
     finish() {
-      console.log('FINISH');
-      this.started = false;
+      h.finish(this.profileId).then(() => this.get_status());
     },
   },
 };
@@ -48,19 +62,18 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  margin-top: 3em;
 }
 
-#nav {
-  padding: 30px;
+.timer {
+  font-size: 600%;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+.overtime {
+  color: green;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.actions {
+  font-size: 240%;
 }
 </style>

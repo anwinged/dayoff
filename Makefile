@@ -22,6 +22,15 @@ build:
 format:
 	crystal tool format ./src ./spec
 
+build-assets:
+	rm -rf ./public/assets
+	nodejs npm run-script build
+
+format-assets:
+	nodejs npm run-script format-webpack || true
+	nodejs npm run-script format-js || true
+	nodejs npm run-script format-vue || true
+
 .PHONY: run
 run: format
 	crystal run $(ENTRY_POINT)

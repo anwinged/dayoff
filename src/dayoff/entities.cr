@@ -79,4 +79,23 @@ module Dayoff
       end
     end
   end
+
+  STATUS_UPTIME   = "uptime"
+  STATUS_OVERTIME = "overtime"
+
+  class StatusResponse
+    JSON.mapping(
+      started: Bool,
+      status: String,
+      hours: Int32,
+      minutes: Int32,
+    )
+
+    def initialize(@started : Bool, ts : Time::Span)
+      zero = Time::Span.zero
+      @status = ts < zero ? STATUS_OVERTIME : STATUS_UPTIME
+      @hours = ts.abs.total_hours.to_i32
+      @minutes = ts.abs.minutes.to_i32
+    end
+  end
 end
