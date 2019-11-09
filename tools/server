@@ -14,4 +14,5 @@ docker run -i $TTY \
 	-v "$PWD:/app" \
 	-p "3000:3000" \
 	-w "/app" \
+	-e "BASE_PATH=$BASE_PATH" \
 	dayoff-crystal crystal "$@"

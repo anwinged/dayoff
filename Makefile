@@ -37,7 +37,7 @@ run: format
 
 .PHONY: run-server
 run-server: format
-	server run $(ENTRY_POINT)
+	BASE_PATH="./tmp" server run $(ENTRY_POINT)
 
 .PHONY: spec
 spec: format

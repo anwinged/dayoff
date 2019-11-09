@@ -2,7 +2,9 @@ require "kemal"
 require "./dayoff/**"
 require "./handlers"
 
-base_path = "./tmp"
+base_path = ENV["BASE_PATH"]
+
+puts "Set storage base path: " + base_path
 
 app = Dayoff::App.new base_path
 
