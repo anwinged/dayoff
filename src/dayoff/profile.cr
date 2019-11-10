@@ -3,6 +3,10 @@ module Dayoff
     def initialize(@id : String)
     end
 
+    def empty? : Bool
+      @id.empty?
+    end
+
     def to_s : String
       @id
     end

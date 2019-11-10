@@ -7,7 +7,6 @@ class CheckProfileHandler < Kemal::Handler
 
   def call(env)
     path = env.request.path
-    puts "run check profile"
     if /^\/api/.match(path)
       profile_id = get_profile_id env
       if @app.profile? profile_id
@@ -26,7 +25,6 @@ class CheckProfileHandler < Kemal::Handler
   private def get_profile_id(env) : Dayoff::ProfileId
     profile_id = env.params.query[QUERY_PARAM]? ||
                  env.request.headers[HEADER_PARAM]? || ""
-    puts "PROFILE_ID", profile_id
-    Dayoff::ProfileId.new profile_id
+    Dayoff::ProfileId.new profile_id.strip
   end
 end

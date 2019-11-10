@@ -4,7 +4,11 @@ module Dayoff
     end
 
     def profile?(profile_id : ProfileId) : Bool
-      Dir.exists? File.join(@base_path, profile_id.to_s)
+      if profile_id.empty?
+        false
+      else
+        Dir.exists? File.join(@base_path, profile_id.to_s)
+      end
     end
 
     def profile(profile_id : ProfileId) : Profile
