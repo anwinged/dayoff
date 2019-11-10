@@ -52,7 +52,7 @@ module Dayoff
       end
     end
 
-    st_file_def(planned_dates, PlannedDate, "planed-dates.json")
-    st_file_def(work_records, WorkRecord, "work_records.json")
+    st_file_def(planned_dates, PlannedDate, "planned-dates.json")
+    st_file_def(work_records, WorkRecord, "work-records.json")
   end
 end
