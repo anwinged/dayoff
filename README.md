@@ -1,27 +1,20 @@
-# Can I take a daya off?
+# Can I take a day off?
 
-TODO: Write a description here
+[![CircleCI](https://circleci.com/gh/anwinged/dayoff/tree/master.svg?style=svg)](https://circleci.com/gh/anwinged/dayoff/tree/master)
+
+Simple app for time traking. Pet project created with Crystal, Vue.js and Circle CI.
 
 ## Installation
 
-TODO: Write installation instructions here
+With docker you can run
 
-## Usage
+    $ make install
+    $ make run-server
 
-TODO: Write usage instructions here
+Next open <http://localhost:3000/?profile=profile-xyz> in browser,
+where `profile-xyz` is profile name stored in `var/data` directory.
 
-## Development
+## Tests
 
-TODO: Write development instructions here
-
-## Contributing
-
-1. Fork it (<https://github.com/your-github-user/dayoff/fork>)
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
-
-## Contributors
-
-- [your-name-here](https://github.com/your-github-user) - creator and maintainer
+    $ make spec
+    $ make ameba

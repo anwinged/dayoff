@@ -13,7 +13,7 @@ install-shards:
 	shards install
 
 .PHONY: install
-install: build-docker install-shards
+install: build-docker install-shards install-assets build-assets
 
 .PHONY: build
 build:
@@ -23,6 +23,9 @@ build:
 .PHONY: format
 format:
 	crystal tool format ./src ./spec
+
+install-assets:
+	nodejs npm install
 
 build-assets:
 	rm -rf ./public/assets
@@ -39,7 +42,8 @@ run: format
 
 .PHONY: run-server
 run-server: format
-	BASE_PATH="./tmp" server run $(ENTRY_POINT)
+	mkdir -p ./var/data
+	BASE_PATH="./var/data" server run $(ENTRY_POINT)
 
 .PHONY: spec
 spec: format
