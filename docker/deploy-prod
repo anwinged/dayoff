@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+set -eux
+
+source /home/dayoff/.env
+
+IMAGE=anwinged/dayoff
+DATA_PATH=/home/dayoff/data
+CONTAINER_NAME="${CONTAINER_PREFIX}-server"
+
+mkdir -p "$DATA_PATH"
+
+TTY=
+
+if [ -t 1 ] ; then
+	TTY=-t
+fi
+
+docker pull "${IMAGE}"
+
+docker stop "${CONTAINER_NAME}" || true
+docker rm "${CONTAINER_NAME}" || true
+
+docker run $TTY \
+	--init \
+	--detach \
+	--name "${CONTAINER_NAME}" \
+	--restart=unless-stopped \
+	-u "$(id -u):$(id -g)" \
+	-p "$WEB_SERVER_PORT:3000" \
+	-v "$DATA_PATH:/opt/dayoff" \
+	$IMAGE

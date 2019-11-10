@@ -43,6 +43,16 @@ jobs:
       - run: docker login --username "$DOCKER_REG_USERNAME" --password "$DOCKER_REG_PASSWORD"
       - run: docker push anwinged/dayoff
 
+  deploy_app:
+    docker:
+      - image: alpine:3.10.3
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run: apk add -u openssh-client
+      - run: ssh-keyscan vakhrushev.me >> ~/.ssh/known_hosts
+      - run: cat docker/deploy-prod | ssh dayoff@vakhrushev.me 
+
 workflows:
   version: 2
   test_and_build:
@@ -53,3 +63,6 @@ workflows:
           requires:
             - build_server
             - build_assets
+      - deploy_app:
+          requires:
+            - build_docker_image
