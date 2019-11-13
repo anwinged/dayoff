@@ -94,5 +94,11 @@ module Dayoff::Test
         prof.finish finish_time
       end
     end
+
+    it "can calc diff on concrete date" do
+      prof = create_profile
+      span = prof.date_status d(1)
+      span.total_hours.should eq -2
+    end
   end
 end

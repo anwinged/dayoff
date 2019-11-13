@@ -71,6 +71,28 @@ module Dayoff
       planned - worked
     end
 
+    def date_status(d : Time) : Time::Span
+      planned = get_planned_hours_on_date d
+      worked = get_work_hours_on_date d
+      planned - worked
+    end
+
+    private def get_planned_hours_on_date(d : Time) : Time::Span
+      @pdates.reduce(Time::Span.zero) do |acc, wd|
+        if wd.same_date? d
+          acc + wd.time_span
+        else
+          acc
+        end
+      end
+    end
+
+    private def get_work_hours_on_date(d : Time) : Time::Span
+      @wrecords.reduce(Time::Span.zero) do |acc, wr|
+        acc + wr.on_date d
+      end
+    end
+
     private def started_point
       @wrecords.find { |x| x.started? }
     end

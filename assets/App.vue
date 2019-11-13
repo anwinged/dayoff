@@ -7,6 +7,9 @@
       <a v-if="started" v-on:click.prevent="finish" href="#">Закончить</a>
       <a v-else v-on:click.prevent="start" href="#">Начать</a>
     </section>
+    <section class="today">
+      Сегодня {{ today_time }}
+    </section>
     <p class="profile-info">Профиль: {{ profileId }}</p>
   </div>
 </template>
@@ -21,12 +24,13 @@ export default {
       status: '',
       hours: 0,
       minutes: 0,
+      today: null,
     };
   },
   created() {
     this.profileId = h.extract_profile_id();
     this.get_status();
-    setInterval(() => this.get_status(), 30 * 1000);
+    setInterval(() => this.get_status(), 60 * 1000);
   },
   computed: {
     time() {
@@ -36,14 +40,19 @@ export default {
     isOvertime() {
       return this.status === 'overtime';
     },
+    today_time() {
+      const sign = this.today.status === 'overtime' ? '+' : '';
+      return sign + this.today.hours + ':' + String(this.today.minutes).padStart(2, '0');      
+    }
   },
   methods: {
     get_status() {
       h.get_status(this.profileId).then(data => {
         this.started = data.started;
-        this.status = data.status;
-        this.hours = data.hours;
-        this.minutes = data.minutes;
+        this.status = data.total.status;
+        this.hours = data.total.hours;
+        this.minutes = data.total.minutes;
+        this.today = data.today;
       });
     },
     start() {
@@ -75,5 +84,14 @@ export default {
 
 .actions {
   font-size: 240%;
+}
+
+.today {
+  margin-top: 1em;
+  font-size: 200%;
+}
+
+.profile-info {
+  margin-top: 2em;
 }
 </style>
