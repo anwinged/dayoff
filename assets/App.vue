@@ -1,14 +1,18 @@
 <template>
   <div id="app">
-    <section class="timer" v-bind:class="{ overtime: isOvertime }">
-      {{ time }}
+    <section
+      v-if="total_time"
+      class="timer"
+      v-bind:class="{ overtime: isOvertime }"
+    >
+      {{ total_time | str_time }}
     </section>
     <section class="actions">
       <a v-if="started" v-on:click.prevent="finish" href="#">Закончить</a>
       <a v-else v-on:click.prevent="start" href="#">Начать</a>
     </section>
-    <section class="today">
-      Сегодня {{ today_time }}
+    <section v-if="today_time" class="today">
+      Сегодня {{ today_time | str_time }}
     </section>
     <p class="profile-info">Профиль: {{ profileId }}</p>
   </div>
@@ -21,10 +25,8 @@ export default {
     return {
       profileId: null,
       started: false,
-      status: '',
-      hours: 0,
-      minutes: 0,
-      today: null,
+      total_time: null,
+      today_time: null,
     };
   },
   created() {
@@ -33,26 +35,16 @@ export default {
     setInterval(() => this.get_status(), 60 * 1000);
   },
   computed: {
-    time() {
-      const sign = this.isOvertime ? '+' : '';
-      return sign + this.hours + ':' + String(this.minutes).padStart(2, '0');
-    },
     isOvertime() {
-      return this.status === 'overtime';
+      return this.total_time && this.total_time.status === 'overtime';
     },
-    today_time() {
-      const sign = this.today.status === 'overtime' ? '+' : '';
-      return sign + this.today.hours + ':' + String(this.today.minutes).padStart(2, '0');      
-    }
   },
   methods: {
     get_status() {
       h.get_status(this.profileId).then(data => {
         this.started = data.started;
-        this.status = data.total.status;
-        this.hours = data.total.hours;
-        this.minutes = data.total.minutes;
-        this.today = data.today;
+        this.total_time = data.total.time;
+        this.today_time = data.today.time;
       });
     },
     start() {
@@ -60,6 +52,12 @@ export default {
     },
     finish() {
       h.finish(this.profileId).then(() => this.get_status());
+    },
+  },
+  filters: {
+    str_time(time) {
+      const sign = time.status === 'overtime' ? '+' : '';
+      return sign + time.hours + ':' + String(time.minutes).padStart(2, '0');
     },
   },
 };

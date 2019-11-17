@@ -67,7 +67,7 @@ module Dayoff::Test
 
     it "can calc remaining time" do
       prof = create_profile
-      span = prof.remaining_time t(3, 12)
+      span = prof.total_status t(3, 12)
       expected = 8 * 3 - 10 * 2
       expected.should eq span.total_hours
     end

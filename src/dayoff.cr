@@ -17,10 +17,8 @@ def now
   Time.local(Time::Location.load("Europe/Moscow"))
 end
 
-def date_status(profile, date)
-  span = profile.date_status date
+def serialize_span(span : Time::Span)
   {
-    date:    date.to_s("%Y-%m-%d"),
     status:  span < Time::Span.zero ? STATUS_OVERTIME : STATUS_UPTIME,
     hours:   span.abs.total_hours.to_i32,
     minutes: span.abs.minutes.to_i32,
@@ -41,15 +39,17 @@ end
 
 get "/api/status" do |env|
   profile = app.profile Dayoff::ProfileId.new(env.get("profile_id").to_s)
-  rem_span = profile.remaining_time now
+  total_span = profile.total_status now
+  today_span = profile.date_status now
   data = {
     started: profile.started?,
     total:   {
-      status:  rem_span < Time::Span.zero ? STATUS_OVERTIME : STATUS_UPTIME,
-      hours:   rem_span.abs.total_hours.to_i32,
-      minutes: rem_span.abs.minutes.to_i32,
+      time: serialize_span total_span,
     },
-    today: date_status(profile, now),
+    today: {
+      date: now.to_s("%Y-%m-%d"),
+      time: serialize_span today_span,
+    },
   }
   env.response.content_type = "application/json"
   data.to_json

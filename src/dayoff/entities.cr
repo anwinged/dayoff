@@ -70,7 +70,8 @@ module Dayoff
     end
 
     private def in_range_finished(from_time : Time, to_time : Time) : Time::Span
-      if @start <= to_time && finish! >= from_time
+      crossed = Helpers.crossed? @start, finish!, from_time, to_time
+      if crossed
         normalized_start = Math.max(@start, from_time)
         normalized_finish = Math.min(finish!, to_time)
         normalized_finish - normalized_start

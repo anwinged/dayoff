@@ -64,20 +64,15 @@ module Dayoff
       end
     end
 
-    private def zero_time : Time
-      location = Time::Location.load("Europe/Moscow")
-      Time.local(1, 1, 1, 0, 0, location: location)
-    end
-
-    def remaining_time(on_time : Time) : Time::Span
-      planned = get_planned zero_time, on_time
-      worked = get_worked zero_time, on_time
+    def total_status(on_time : Time) : Time::Span
+      planned = get_planned Helpers.zero_time, on_time
+      worked = get_worked Helpers.zero_time, on_time
       planned - worked
     end
 
-    def date_status(date : Time) : Time::Span
-      planned = get_planned date.at_beginning_of_day, date.at_end_of_day
-      worked = get_worked date.at_beginning_of_day, date
+    def date_status(on_time : Time) : Time::Span
+      planned = get_planned on_time.at_beginning_of_day, on_time.at_end_of_day
+      worked = get_worked on_time.at_beginning_of_day, on_time
       planned - worked
     end
   end
