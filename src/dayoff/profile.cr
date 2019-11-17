@@ -21,21 +21,8 @@ module Dayoff
       @wrecords = @storage.get_work_records
     end
 
-    def get_planned_hours(on_time : Time) : Time::Span
-      check_date = on_time.at_beginning_of_day
-      @pdates.reduce(Time::Span.zero) do |acc, wd|
-        if wd.date <= check_date
-          acc + wd.time_span
-        else
-          acc
-        end
-      end
-    end
-
-    def get_work_hours(on_time : Time) : Time::Span
-      @wrecords.reduce(Time::Span.zero) do |acc, wr|
-        acc + wr.calc_span on_time
-      end
+    private def started_point
+      @wrecords.find { |x| x.started? }
     end
 
     def started? : Bool
@@ -65,36 +52,33 @@ module Dayoff
       @storage.set_work_records @wrecords
     end
 
-    def remaining_time(on_time : Time) : Time::Span
-      planned = get_planned_hours on_time
-      worked = get_work_hours on_time
-      planned - worked
-    end
-
-    def date_status(d : Time) : Time::Span
-      planned = get_planned_hours_on_date d
-      worked = get_work_hours_on_date d
-      planned - worked
-    end
-
-    private def get_planned_hours_on_date(d : Time) : Time::Span
-      @pdates.reduce(Time::Span.zero) do |acc, wd|
-        if wd.same_date? d
-          acc + wd.time_span
-        else
-          acc
-        end
+    def get_planned(from_time : Time, to_time : Time) : Time::Span
+      @pdates.reduce(Time::Span.zero) do |acc, pd|
+        acc + pd.in_range(from_time, to_time)
       end
     end
 
-    private def get_work_hours_on_date(d : Time) : Time::Span
+    def get_worked(from_time : Time, to_time : Time) : Time::Span
       @wrecords.reduce(Time::Span.zero) do |acc, wr|
-        acc + wr.on_date d
+        acc + wr.in_range(from_time, to_time)
       end
     end
 
-    private def started_point
-      @wrecords.find { |x| x.started? }
+    private def zero_time : Time
+      location = Time::Location.load("Europe/Moscow")
+      Time.local(1, 1, 1, 0, 0, location: location)
+    end
+
+    def remaining_time(on_time : Time) : Time::Span
+      planned = get_planned zero_time, on_time
+      worked = get_worked zero_time, on_time
+      planned - worked
+    end
+
+    def date_status(date : Time) : Time::Span
+      planned = get_planned date.at_beginning_of_day, date.at_end_of_day
+      worked = get_worked date.at_beginning_of_day, date
+      planned - worked
     end
   end
 end

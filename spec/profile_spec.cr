@@ -18,15 +18,6 @@ module Dayoff::Test
   end
 
   describe Profile do
-    it "can calc work hours" do
-      storage = MemoryStorage.new
-      storage.set_work_records [
-        WorkRecord.new(t(1, 10), t(1, 20)),
-      ]
-      prof = Profile.new(storage)
-      prof.get_work_hours(t(2, 0)).total_hours.should eq 10
-    end
-
     it "can write new record" do
       storage = MemoryStorage.new
       storage.set_work_records [
@@ -54,27 +45,6 @@ module Dayoff::Test
       records.last.finish.should eq finish_time
     end
 
-    it "can calc planned hours" do
-      prof = create_profile
-      span = prof.get_planned_hours t(3, 12)
-      expected = 8 * 3
-      expected.should eq span.total_hours
-    end
-
-    it "can calc work hours" do
-      prof = create_profile
-      span = prof.get_work_hours t(3, 12)
-      expected = 10 * 2
-      expected.should eq span.total_hours
-    end
-
-    it "can calc remaining time" do
-      prof = create_profile
-      span = prof.remaining_time t(3, 12)
-      expected = 8 * 3 - 10 * 2
-      expected.should eq span.total_hours
-    end
-
     it "not start twice" do
       prof = create_profile
       start_time = t(3, 10, 0)
@@ -95,10 +65,17 @@ module Dayoff::Test
       end
     end
 
+    it "can calc remaining time" do
+      prof = create_profile
+      span = prof.remaining_time t(3, 12)
+      expected = 8 * 3 - 10 * 2
+      expected.should eq span.total_hours
+    end
+
     it "can calc diff on concrete date" do
       prof = create_profile
-      span = prof.date_status d(1)
-      span.total_hours.should eq -2
+      span = prof.date_status t(1, 15)
+      span.total_hours.should eq 3
     end
   end
 end

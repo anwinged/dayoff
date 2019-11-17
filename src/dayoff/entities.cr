@@ -23,12 +23,12 @@ module Dayoff
     def initialize(@date : Time, @hours : Int32)
     end
 
-    def time_span : Time::Span
-      Time::Span.new(hours: hours, minutes: 0, seconds: 0)
-    end
-
-    def same_date?(d : Time) : Bool
-      @date.date == d.date
+    def in_range(from_time : Time, to_time : Time) : Time::Span
+      if @date >= from_time && @date < to_time
+        Time::Span.new(hours: @hours, minutes: 0, seconds: 0)
+      else
+        Time::Span.zero
+      end
     end
   end
 
@@ -61,32 +61,28 @@ module Dayoff
       !@finish.nil?
     end
 
-    def finished_to_time?(time : Time) : Bool
-      @finish && @finish <= time
-    end
-
-    def calc_span(time : Time) : Time::Span
-      if @finish.nil?
-        if @start <= time
-          time - @start
-        else
-          Time::Span.zero
-        end
+    def in_range(from_time : Time, to_time : Time) : Time::Span
+      if finished?
+        in_range_finished from_time, to_time
       else
-        if time > finish!
-          finish! - @start
-        elsif time > @start
-          time - @start
-        else
-          Time::Span.zero
-        end
+        in_range_not_finished from_time, to_time
       end
     end
 
-    def on_date(d : Time) : Time::Span
-      if @start.date == d.date
-        fin = @finish || d
-        fin - start
+    private def in_range_finished(from_time : Time, to_time : Time) : Time::Span
+      if @start <= to_time && finish! >= from_time
+        normalized_start = Math.max(@start, from_time)
+        normalized_finish = Math.min(finish!, to_time)
+        normalized_finish - normalized_start
+      else
+        Time::Span.zero
+      end
+    end
+
+    private def in_range_not_finished(from_time : Time, to_time : Time) : Time::Span
+      if @start <= to_time
+        normalized_start = Math.max(@start, from_time)
+        to_time - normalized_start
       else
         Time::Span.zero
       end
