@@ -63,6 +63,12 @@ workflows:
           requires:
             - build_server
             - build_assets
+          filters:
+            branches:
+              only: master
       - deploy_app:
           requires:
             - build_docker_image
+          filters:
+            branches:
+              only: master
