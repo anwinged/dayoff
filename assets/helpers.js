@@ -7,7 +7,6 @@ function extract_profile_id() {
   const q = haystack.substring(haystack.indexOf('?') + 1, haystack.length);
   const query = qs.parse(q);
   const profile = query[PROFILE_QUERY] || '';
-  // console.log('PROFILE', query, profile);
   return profile;
 }
 
@@ -18,7 +17,6 @@ async function get_status(profileId) {
     method: 'GET',
   });
   const data = await response.json();
-  // console.log('DATA', data);
   return data;
 }
 
