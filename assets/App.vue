@@ -1,18 +1,18 @@
 <template>
   <div id="app">
     <section
-      v-if="total_time"
+      v-if="today_time"
       class="timer"
       v-bind:class="{ overtime: isOvertime }"
     >
-      {{ total_time | str_time }}
+      {{ today_time | str_time }}
     </section>
     <section class="actions">
       <a v-if="started" v-on:click.prevent="finish" href="#">Закончить</a>
       <a v-else v-on:click.prevent="start" href="#">Начать</a>
     </section>
-    <section v-if="today_time" class="today">
-      Сегодня {{ today_time | str_time }}
+    <section v-if="total_time" class="total">
+      Всего {{ total_time | str_time }}
     </section>
     <p class="profile-info">Профиль: {{ profileId }}</p>
   </div>
@@ -84,7 +84,7 @@ export default {
   font-size: 240%;
 }
 
-.today {
+.total {
   margin-top: 1em;
   font-size: 200%;
 }
