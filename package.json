@@ -31,6 +31,7 @@
   },
   "scripts": {
     "build": "webpack --config webpack.config.js --progress",
+    "watch": "webpack --config webpack.config.js --watch --progress",
     "build-prod": "webpack --config webpack.config.js --env.production",
     "format-webpack": "prettier --single-quote --trailing-comma es5 --write \"./webpack.config.js\"",
     "format-js": "prettier --single-quote --trailing-comma es5 --write \"./assets/**/*.js\"",

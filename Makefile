@@ -31,6 +31,10 @@ build-assets:
 	rm -rf ./public/assets
 	nodejs npm run-script build
 
+watch-assets:
+	rm -rf ./public/assets
+	nodejs npm run-script watch
+
 format-assets:
 	nodejs npm run-script format-webpack || true
 	nodejs npm run-script format-js || true
