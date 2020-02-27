@@ -18,6 +18,16 @@
       </span>
     </section>
     <p class="profile-info">Профиль: {{ profileId }}</p>
+    <a href="#" v-on:click.prevent="show_stat = !show_stat">Статистика</a>
+    <div v-if="show_stat">
+      <table class="stat-table">
+        <tr v-for="item in statistics">
+          <td>{{ item.date }}</td>
+          <td>{{ item.planned.total_minutes }}</td>
+          <td>{{ item.worked.total_minutes }}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -31,11 +41,14 @@ export default {
       started: false,
       total_time: null,
       today_time: null,
+      show_stat: false,
+      statistics: [],
     };
   },
   created() {
     this.profileId = h.extract_profile_id();
     this.get_status();
+    this.get_statistics();
     setInterval(() => this.get_status(), 60 * 1000);
   },
   methods: {
@@ -44,6 +57,11 @@ export default {
         this.started = data.started;
         this.total_time = TimeSpan.fromObject(data.total.time);
         this.today_time = TimeSpan.fromObject(data.today.time);
+      });
+    },
+    get_statistics() {
+      h.get_statistics(this.profileId).then(data => {
+        this.statistics = data;
       });
     },
     start() {
@@ -84,5 +102,9 @@ export default {
 
 .profile-info {
   margin-top: 2em;
+}
+
+.stat-table {
+  display: inline-table;
 }
 </style>

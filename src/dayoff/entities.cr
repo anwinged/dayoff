@@ -23,9 +23,13 @@ module Dayoff
     def initialize(@date : Time, @hours : Int32)
     end
 
+    def hours_as_span : Time::Span
+      Time::Span.new(hours: @hours, minutes: 0, seconds: 0)
+    end
+
     def in_range(from_time : Time, to_time : Time) : Time::Span
       if @date >= from_time && @date < to_time
-        Time::Span.new(hours: @hours, minutes: 0, seconds: 0)
+        hours_as_span
       else
         Time::Span.zero
       end
@@ -59,6 +63,10 @@ module Dayoff
 
     def finished? : Bool
       !@finish.nil?
+    end
+
+    def get_span(to_time : Time) : Time::Span
+      in_range @start, to_time
     end
 
     def in_range(from_time : Time, to_time : Time) : Time::Span

@@ -19,9 +19,10 @@ end
 
 def serialize_span(span : Time::Span)
   {
-    status:  span < Time::Span.zero ? STATUS_OVERTIME : STATUS_UPTIME,
-    hours:   span.abs.total_hours.to_i32,
-    minutes: span.abs.minutes.to_i32,
+    status:        span < Time::Span.zero ? STATUS_OVERTIME : STATUS_UPTIME,
+    hours:         span.abs.total_hours.to_i32,
+    minutes:       span.abs.minutes.to_i32,
+    total_minutes: span.abs.total_minutes.to_i32,
   }
 end
 
@@ -53,6 +54,19 @@ get "/api/status" do |env|
   }
   env.response.content_type = "application/json"
   data.to_json
+end
+
+get "/api/statistics" do |env|
+  profile = app.profile Dayoff::ProfileId.new(env.get("profile_id").to_s)
+  data = profile.statistics now
+  mapped = data.map do |v|
+    {
+      date:    v.date.to_s("%Y-%m-%d"),
+      planned: serialize_span(v.planned),
+      worked:  serialize_span(v.worked),
+    }
+  end
+  mapped.to_json
 end
 
 get "/" do

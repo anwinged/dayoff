@@ -77,5 +77,11 @@ module Dayoff::Test
       span = prof.date_status t(1, 15)
       span.total_hours.should eq 3
     end
+
+    it "can get statistics" do
+      prof = create_profile
+      stat = prof.statistics t(3, 12)
+      stat.size.should eq 3
+    end
   end
 end

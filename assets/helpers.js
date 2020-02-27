@@ -32,4 +32,19 @@ async function finish(profileId) {
   });
 }
 
-export default { extract_profile_id, check_profile, get_status, start, finish };
+async function get_statistics(profileId) {
+  const response = await fetch('/api/statistics?profile_id=' + profileId, {
+    method: 'GET',
+  });
+  const data = await response.json();
+  return data;
+}
+
+export default {
+  extract_profile_id,
+  check_profile,
+  get_status,
+  start,
+  finish,
+  get_statistics,
+};
