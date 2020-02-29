@@ -16,7 +16,7 @@ if [ -t 1 ] ; then
 	TTY=-t
 fi
 
-echo "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY" | docker login --username json_key --password-stdin cr.yandex
+cat /home/dayoff/yandex_cloud_docker_registry_key.json | docker login --username json_key --password-stdin cr.yandex
 
 docker pull "${IMAGE}"
 
