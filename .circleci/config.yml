@@ -40,18 +40,18 @@ jobs:
       - run: cp /tmp/data/main.css /tmp/data/main.js ./public/assets/
       - setup_remote_docker
       - run: docker build --file ./docker/Dockerfile.prod --tag anwinged/dayoff .
-      - run: docker login --username "$DOCKER_REG_USERNAME" --password "$DOCKER_REG_PASSWORD"
+      - run: echo "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY" | docker login --username json_key --password-stdin cr.yandex
       - run: docker push anwinged/dayoff
 
-  deploy_app:
-    docker:
-      - image: alpine:3.10.3
-    steps:
-      - checkout
-      - add_ssh_keys
-      - run: apk add -u openssh-client
-      - run: ssh-keyscan vakhrushev.me >> ~/.ssh/known_hosts
-      - run: cat docker/deploy-prod | ssh dayoff@vakhrushev.me 
+  # deploy_app:
+  #   docker:
+  #     - image: alpine:3.10.3
+  #   steps:
+  #     - checkout
+  #     - add_ssh_keys
+  #     - run: apk add -u openssh-client
+  #     - run: ssh-keyscan vakhrushev.me >> ~/.ssh/known_hosts
+  #     - run: cat docker/deploy-prod | ssh dayoff@vakhrushev.me 
 
 workflows:
   version: 2
@@ -66,9 +66,9 @@ workflows:
           filters:
             branches:
               only: master
-      - deploy_app:
-          requires:
-            - build_docker_image
-          filters:
-            branches:
-              only: master
+      # - deploy_app:
+      #     requires:
+      #       - build_docker_image
+      #     filters:
+      #       branches:
+      #         only: master
