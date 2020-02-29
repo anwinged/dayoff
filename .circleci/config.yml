@@ -50,9 +50,9 @@ jobs:
       - checkout
       - add_ssh_keys
       - run: apk add -u openssh-client
-      - run: ssh-keyscan vakhrushev.me >> ~/.ssh/known_hosts
-      - run: echo "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY" | ssh dayoff@vakhrushev.me -T "cat > /home/dayoff/yandex_cloud_docker_registry_key.json"
-      - run: cat docker/deploy-prod | ssh dayoff@vakhrushev.me
+      - run: ssh-keyscan "$TARGET_HOST" >> ~/.ssh/known_hosts
+      - run: echo "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY" | ssh "dayoff@$TARGET_HOST" -T "cat > /home/dayoff/yandex_cloud_docker_registry_key.json"
+      - run: cat docker/deploy-prod | ssh "dayoff@$TARGET_HOST"
 
 workflows:
   version: 2
