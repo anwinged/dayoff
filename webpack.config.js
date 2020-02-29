@@ -26,34 +26,20 @@ module.exports = (env = {}) => {
 
   const MINI_CSS_LOADER = MiniCssExtractPlugin.loader;
 
-  const BABEL_LOADER = {
+  const JS_LOADER = {
     loader: 'babel-loader',
     options: {
-      presets: ['@babel/preset-env'],
-      plugins: [
-        '@babel/plugin-transform-runtime',
-        '@babel/plugin-proposal-class-properties',
+      presets: [
+        [
+          '@babel/preset-env',
+          { modules: false, useBuiltIns: 'usage', corejs: 3 },
+        ],
       ],
     },
   };
 
   const VUE_LOADER = {
     loader: 'vue-loader',
-    options: {
-      loaders: {
-        css: [
-          MINI_CSS_LOADER, //'vue-style-loader',
-          CSS_LOADER,
-          POSTCSS_LOADER,
-        ],
-        scss: [
-          MINI_CSS_LOADER, //'vue-style-loader',
-          CSS_LOADER,
-          POSTCSS_LOADER,
-          SCSS_LOADER,
-        ],
-      },
-    },
   };
 
   return {
@@ -69,14 +55,10 @@ module.exports = (env = {}) => {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          use: [BABEL_LOADER],
+          use: [JS_LOADER],
         },
         {
-          test: /\.css$/,
-          use: [MINI_CSS_LOADER, CSS_LOADER, POSTCSS_LOADER],
-        },
-        {
-          test: /\.scss$/,
+          test: /\.(scss|css)$/,
           use: [MINI_CSS_LOADER, CSS_LOADER, POSTCSS_LOADER, SCSS_LOADER],
         },
         {
