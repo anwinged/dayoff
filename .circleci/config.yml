@@ -39,9 +39,9 @@ jobs:
       - run: mkdir -p ./public/assets/
       - run: cp /tmp/data/main.css /tmp/data/main.js ./public/assets/
       - setup_remote_docker
-      - run: docker build --file ./docker/Dockerfile.prod --tag anwinged/dayoff .
       - run: echo "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY" | docker login --username json_key --password-stdin cr.yandex
-      - run: docker push cr.yandex/crplfk0168i4o8kd7ade anwinged/dayoff
+      - run: docker build --file ./docker/Dockerfile.prod --tag cr.yandex/crplfk0168i4o8kd7ade/dayoff .
+      - run: docker push cr.yandex/crplfk0168i4o8kd7ade/dayoff
 
   # deploy_app:
   #   docker:
