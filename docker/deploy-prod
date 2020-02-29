@@ -4,7 +4,7 @@ set -eux
 
 source /home/dayoff/.env
 
-IMAGE=anwinged/dayoff
+IMAGE=cr.yandex/crplfk0168i4o8kd7ade/dayoff
 DATA_PATH=/home/dayoff/data
 CONTAINER_NAME="${CONTAINER_PREFIX}-server"
 
@@ -15,6 +15,8 @@ TTY=
 if [ -t 1 ] ; then
 	TTY=-t
 fi
+
+echo "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY" | docker login --username json_key --password-stdin cr.yandex
 
 docker pull "${IMAGE}"
 

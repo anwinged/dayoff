@@ -43,15 +43,16 @@ jobs:
       - run: docker build --file ./docker/Dockerfile.prod --tag cr.yandex/crplfk0168i4o8kd7ade/dayoff .
       - run: docker push cr.yandex/crplfk0168i4o8kd7ade/dayoff
 
-  # deploy_app:
-  #   docker:
-  #     - image: alpine:3.10.3
-  #   steps:
-  #     - checkout
-  #     - add_ssh_keys
-  #     - run: apk add -u openssh-client
-  #     - run: ssh-keyscan vakhrushev.me >> ~/.ssh/known_hosts
-  #     - run: cat docker/deploy-prod | ssh dayoff@vakhrushev.me 
+  deploy_app:
+    docker:
+      - image: alpine:3.10.3
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run: apk add -u openssh-client
+      - run: ssh-keyscan vakhrushev.me >> ~/.ssh/known_hosts
+      - run: echo "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY" | ssh dayoff@vakhrushev.me -T "cat > /home/dayoff/yandex_cloud_docker_registry_key.json"
+      - run: cat docker/deploy-prod | "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY=$YANDEX_CLOUD_DOCKER_REGISTRY_KEY ssh dayoff@vakhrushev.me"
 
 workflows:
   version: 2
@@ -66,9 +67,9 @@ workflows:
           filters:
             branches:
               only: master
-      # - deploy_app:
-      #     requires:
-      #       - build_docker_image
-      #     filters:
-      #       branches:
-      #         only: master
+      - deploy_app:
+          requires:
+            - build_docker_image
+          filters:
+            branches:
+              only: master
