@@ -10,7 +10,7 @@
       <td class="date">{{ item.date }}</td>
       <td class="planned">{{ item.planned.total_minutes | tt }}</td>
       <td class="worked">{{ item.worked.total_minutes | tt }}</td>
-      <td class="worked">
+      <td class="difference">
         {{ (item.worked.total_minutes - item.planned.total_minutes) | td }}
       </td>
     </tr>
@@ -38,14 +38,14 @@ export default {
   },
   filters: {
     tt(v) {
-      const h = Math.round(v / 60);
+      const h = Math.floor(v / 60);
       const m = v % 60;
       return (h ? h : '00') + ':' + String(m).padStart(2, '0');
     },
     td(v) {
       const o = v > 0;
       const a = Math.abs(v);
-      const h = Math.round(a / 60);
+      const h = Math.floor(a / 60);
       const m = a % 60;
       const t = (h ? h : '00') + ':' + String(m).padStart(2, '0');
       return (o ? '+' : '-') + t;
@@ -68,7 +68,8 @@ export default {
 
   .date,
   .planned,
-  .worked {
+  .worked,
+  .difference {
     text-align: center;
   }
 }
