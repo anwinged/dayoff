@@ -40,7 +40,7 @@ end
 
 get "/api/status" do |env|
   profile = app.profile Dayoff::ProfileId.new(env.get("profile_id").to_s)
-  total_span = profile.total_status now
+  total_span = profile.total_status now.at_beginning_of_day
   today_span = profile.date_status now
   data = {
     started: profile.started?,

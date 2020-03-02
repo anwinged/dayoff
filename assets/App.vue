@@ -1,110 +1,37 @@
 <template>
-  <div id="app">
-    <section
-      v-if="today_time"
-      class="timer"
-      v-bind:class="{ overtime: today_time.isOvertime() }"
-    >
-      {{ today_time.toStr() }}
-    </section>
-    <section class="actions">
-      <a v-if="started" v-on:click.prevent="finish" href="#">Закончить</a>
-      <a v-else v-on:click.prevent="start" href="#">Начать</a>
-    </section>
-    <section v-if="total_time" class="total">
-      Всего
-      <span v-bind:class="{ overtime: total_time.isOvertime() }">
-        {{ total_time.toStr() }}
-      </span>
-    </section>
-    <p class="profile-info">Профиль: {{ profileId }}</p>
-    <a href="#" v-on:click.prevent="show_stat = !show_stat">Статистика</a>
-    <div v-if="show_stat">
-      <table class="stat-table">
-        <tr v-for="item in statistics">
-          <td>{{ item.date }}</td>
-          <td>{{ item.planned.total_minutes }}</td>
-          <td>{{ item.worked.total_minutes }}</td>
-        </tr>
-      </table>
-    </div>
-  </div>
+  <main id="app">
+    <nav id="nav">
+      <router-link class="nav-link" :to="{ name: 'timer' }">Таймер</router-link>
+      <router-link class="nav-link" :to="{ name: 'statistics' }"
+        >Статистика</router-link
+      >
+    </nav>
+    <router-view></router-view>
+  </main>
 </template>
 
-<script>
-import TimeSpan from './TimeSpan';
-import h from './helpers';
-export default {
-  data() {
-    return {
-      profileId: null,
-      started: false,
-      total_time: null,
-      today_time: null,
-      show_stat: false,
-      statistics: [],
-    };
-  },
-  created() {
-    this.profileId = h.extract_profile_id();
-    this.get_status();
-    this.get_statistics();
-    setInterval(() => this.get_status(), 60 * 1000);
-  },
-  methods: {
-    get_status() {
-      h.get_status(this.profileId).then(data => {
-        this.started = data.started;
-        this.total_time = TimeSpan.fromObject(data.total.time);
-        this.today_time = TimeSpan.fromObject(data.today.time);
-      });
-    },
-    get_statistics() {
-      h.get_statistics(this.profileId).then(data => {
-        this.statistics = data;
-      });
-    },
-    start() {
-      h.start(this.profileId).then(() => this.get_status());
-    },
-    finish() {
-      h.finish(this.profileId).then(() => this.get_status());
-    },
-  },
-};
-</script>
+<script></script>
 
 <style lang="scss" scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  max-width: 400px;
+  display: block;
+  margin: 2em auto;
+}
+
+#nav {
   text-align: center;
-  margin-top: 3em;
+  margin: 2em auto;
 }
 
-.timer {
-  font-size: 600%;
+.nav-link {
+  display: inline-block;
 }
 
-.overtime {
-  color: green;
-}
-
-.actions {
-  font-size: 240%;
-}
-
-.total {
-  margin-top: 1em;
-  font-size: 200%;
-}
-
-.profile-info {
-  margin-top: 2em;
-}
-
-.stat-table {
-  display: inline-table;
+.nav-link + .nav-link {
+  margin-left: 0.6em;
 }
 </style>
