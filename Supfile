@@ -40,7 +40,9 @@ commands:
         -u "$(id -u):$(id -g)" \
         -p "$WEB_SERVER_PORT:3000" \
         -v "$DATA_PATH:/opt/dayoff" \
-        $IMAGE
+        $IMAGE ;
+
+      echo "Done."
 
   clear:
     run: rm $REGISTRY_KEY_FILE
