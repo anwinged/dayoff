@@ -72,8 +72,8 @@ workflows:
 #            branches:
 #              only: master
       - deploy_app:
-          requires:
-            - build_docker_image
+#          requires:
+#            - build_docker_image
           filters:
             branches:
               only: master
