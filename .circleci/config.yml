@@ -49,7 +49,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys
-      - run: apt install openssh-client
+      - run: apt-get update; apt-get install -yy openssh-client
       - run: ssh-keyscan "$TARGET_HOST" >> ~/.ssh/known_hosts
       # Prepare sup deploy tool
       - run: wget https://github.com/pressly/sup/releases/download/v0.5.3/sup-linux64 -O sup
