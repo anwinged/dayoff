@@ -1,0 +1,54 @@
+---
+version: 0.4
+
+networks:
+  production:
+    hosts:
+      - dayoff@vakhrushev.me
+
+env:
+  HOME_DIR: /home/dayoff
+  IMAGE: cr.yandex/crplfk0168i4o8kd7ade/dayoff
+  DATA_PATH: $HOME_DIR/data
+  CONTAINER_NAME: dayoff-server
+  REGISTRY_KEY_FILE: $HOME_DIR/yandex_registry_key.json
+
+commands:
+  make-data-dir:
+    run: mkdir -p $DATA_PATH
+
+  copy-yandex-registry-key:
+    local: scp $REG_AUTH_FILE dayoff@vakhrushev.me:$REGISTRY_KEY_FILE
+
+  docker-login:
+    run: cat $REGISTRY_KEY_FILE | docker login --username json_key --password-stdin cr.yandex
+
+  docker-reload-container:
+    run: >
+      source $HOME_DIR/.env ;
+
+      docker pull "$IMAGE" ;
+
+      docker stop "$CONTAINER_NAME" || true ;
+      docker rm "$CONTAINER_NAME" || true ;
+
+      docker run \
+        --init \
+        --detach \
+        --name "$CONTAINER_NAME" \
+        --restart=unless-stopped \
+        -u "$(id -u):$(id -g)" \
+        -p "$WEB_SERVER_PORT:3000" \
+        -v "$DATA_PATH:/opt/dayoff" \
+        $IMAGE
+
+  clear:
+    run: rm $REGISTRY_KEY_FILE
+
+targets:
+  deploy:
+    - make-data-dir
+    - copy-yandex-registry-key
+    - docker-login
+    - docker-reload-container
+    - clear
