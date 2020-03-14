@@ -12,6 +12,9 @@ build-docker:
 install-shards:
 	shards install
 
+update-shards:
+	shards update
+
 .PHONY: install
 install: build-docker install-shards install-assets build-assets
 
