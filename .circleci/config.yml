@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build_server:
     docker:
-      - image: alpine:3.10.3
+      - image: crystallang/crystal:0.33.0-alpine
     steps:
       - checkout
       - run: shards install
