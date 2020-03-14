@@ -50,13 +50,18 @@ jobs:
       - checkout
       - add_ssh_keys
       - run: apt-get update; apt-get install -yy openssh-client wget
-      - run: ssh-keyscan "$TARGET_HOST" >> ~/.ssh/known_hosts
+      - run: ssh-keyscan "vakhrushev.me" >> ~/.ssh/known_hosts
       # Prepare sup deploy tool
       - run: wget https://github.com/pressly/sup/releases/download/v0.5.3/sup-linux64 -O sup
       - run: chmod +x ./sup
       # Deploy app
       - run: echo "$YANDEX_CLOUD_DOCKER_REGISTRY_KEY" > registry_key.json
-      - run: ./sup -env REG_AUTH_FILE=registry_key.json -debug production deploy
+      - run: |
+          ./sup \
+            -env REG_AUTH_FILE=registry_key.json \
+            -env \
+            -debug \
+            production deploy
 
 workflows:
   version: 2
