@@ -6,7 +6,6 @@ jobs:
       - image: alpine:3.10.3
     steps:
       - checkout
-      - run: ./docker/provide-crystal-alpine
       - run: shards install
       - run: make spec STAGE=prod
       - run: make build STAGE=prod
