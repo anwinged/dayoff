@@ -45,7 +45,7 @@ jobs:
 
   deploy_app:
     docker:
-      - image: alpine:3.10.3
+      - image: ubuntu:18.04
     steps:
       - checkout
       - add_ssh_keys

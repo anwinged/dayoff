@@ -25,7 +25,7 @@ commands:
 
   docker-reload-container:
     run: >
-      . $HOME_DIR/.env ;
+      source $HOME_DIR/.env ;
 
       docker pull "$IMAGE" ;
 
